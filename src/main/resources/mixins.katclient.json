@@ -1,0 +1,12 @@
+{
+  "package": "io.github.shotoh.katclient.mixins",
+  "refmap": "mixins.katclient.refmap.json",
+  "minVersion": "0.7",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "NickHider"
+  ],
+  "mixins": [
+    "NetworkManagerMixin"
+  ]
+}
