@@ -1,13 +1,11 @@
 package io.github.shotoh.katclient;
 
 import io.github.shotoh.katclient.commands.KatClientCommand;
-import io.github.shotoh.katclient.core.DataHandler;
 import io.github.shotoh.katclient.core.KatClientConfig;
-import io.github.shotoh.katclient.core.KatClientData;
 import io.github.shotoh.katclient.features.general.FishingPartyNotifications;
-import io.github.shotoh.katclient.features.qol.AutoReconnect;
 import io.github.shotoh.katclient.features.qol.FreeCam;
 import io.github.shotoh.katclient.features.qol.GhostBlocks;
+import io.github.shotoh.katclient.features.qol.TermAutoClicker;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -21,7 +19,6 @@ public class KatClient {
     public static final String VERSION = "1.3.3";
 
     public static KatClientConfig config;
-    public static KatClientData data;
 
     public KatClient() {
         config = KatClientConfig.config;
@@ -38,17 +35,12 @@ public class KatClient {
         MinecraftForge.EVENT_BUS.register(new FishingPartyNotifications());
 
         // qol
-        MinecraftForge.EVENT_BUS.register(new AutoReconnect());
         MinecraftForge.EVENT_BUS.register(new FreeCam());
         MinecraftForge.EVENT_BUS.register(new GhostBlocks());
+        MinecraftForge.EVENT_BUS.register(new TermAutoClicker());
 
         // keybinds
         ClientRegistry.registerKeyBinding(FreeCam.freeCamKeyBind);
         ClientRegistry.registerKeyBinding(GhostBlocks.ghostBlocksKeyBind);
-
-        // data
-        data = DataHandler.load();
-
-        // sans undertale
     }
 }

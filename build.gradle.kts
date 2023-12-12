@@ -6,8 +6,13 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
-group = "io.github.shotoh"
-version = "1.3.3"
+//Constants:
+
+val baseGroup: String by project
+val mcVersion: String by project
+val version: String by project
+val mixinGroup = "$baseGroup.mixin"
+val modid = rootProject.name
 
 // Toolchains:
 java {
@@ -23,17 +28,17 @@ loom {
             property("mixin.debug", "true")
             property("asmhelper.verbose", "true")
             arg("--tweakClass", "org.spongepowered.asm.launch.MixinTweaker")
-            arg("--mixin", "mixins.katclient.json")
+            arg("--mixin", "mixins.$modid.json")
         }
     }
     forge {
         pack200Provider.set(dev.architectury.pack200.java.Pack200Adapter())
         // If you don't want mixins, remove this lines
-        mixinConfig("mixins.katclient.json")
+        mixinConfig("mixins.$modid.json")
     }
     // If you don't want mixins, remove these lines
     mixin {
-        defaultRefmapName.set("mixins.katclient.refmap.json")
+        defaultRefmapName.set("mixins.$modid.refmap.json")
     }
 }
 
@@ -47,9 +52,8 @@ repositories {
     mavenCentral()
     maven("https://repo.spongepowered.org/maven/")
     // If you don't want to log in with your real minecraft account, remove this line
-    //maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
+    maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
 
-    maven("https://jitpack.io")
     maven("https://repo.essential.gg/repository/maven-public")
 }
 
@@ -69,10 +73,9 @@ dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.4-SNAPSHOT")
 
     // If you don't want to log in with your real minecraft account, remove this line
-    //runtimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.1.0")
+    runtimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.1.0")
 
-    implementation("com.github.KevinPriv:MojangAPI:1.0")
-    implementation("gg.essential:essential-1.8.9-forge:4955+g395141645")
+    implementation("gg.essential:essential-1.8.9-forge:11520+gf8b441d20")
 }
 
 // Tasks:
@@ -82,36 +85,54 @@ tasks.withType(JavaCompile::class) {
 }
 
 tasks.withType(Jar::class) {
-    archiveBaseName.set("katclient")
+    archiveBaseName.set(modid)
     manifest.attributes.run {
         this["FMLCorePluginContainsFMLMod"] = "true"
         this["ForceLoadAsMod"] = "true"
 
         // If you don't want mixins, remove these lines
         this["TweakClass"] = "org.spongepowered.asm.launch.MixinTweaker"
-        this["MixinConfigs"] = "mixins.katclient.json"
+        this["MixinConfigs"] = "mixins.$modid.json"
     }
+}
+
+tasks.processResources {
+    inputs.property("version", project.version)
+    inputs.property("mcversion", mcVersion)
+    inputs.property("modid", modid)
+    inputs.property("mixinGroup", mixinGroup)
+
+    filesMatching(listOf("mcmod.info", "mixins.$modid.json")) {
+        expand(inputs.properties)
+    }
+
+    rename("(.+_at.cfg)", "META-INF/$1")
 }
 
 
 val remapJar by tasks.named<net.fabricmc.loom.task.RemapJarTask>("remapJar") {
-    archiveClassifier.set("all")
+    archiveClassifier.set("")
     from(tasks.shadowJar)
     input.set(tasks.shadowJar.get().archiveFile)
 }
 
+tasks.jar {
+    archiveClassifier.set("without-deps")
+    destinationDirectory.set(layout.buildDirectory.dir("badjars"))
+}
+
 tasks.shadowJar {
+    destinationDirectory.set(layout.buildDirectory.dir("badjars"))
     archiveClassifier.set("all-dev")
     configurations = listOf(shadowImpl)
     doLast {
         configurations.forEach {
-            println("Config: ${it.files}")
+            println("Copying jars into mod: ${it.files}")
         }
     }
 
     // If you want to include other dependencies and shadow them, you can relocate them in here
-    fun relocate(name: String) = relocate(name, "com.katclient.deps.$name")
+    fun relocate(name: String) = relocate(name, "$baseGroup.deps.$name")
 }
 
 tasks.assemble.get().dependsOn(tasks.remapJar)
-

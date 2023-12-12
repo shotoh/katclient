@@ -13,7 +13,7 @@ public class KatClientConfig extends Vigilant {
             name = "Time To Scan",
             category = "Features",
             subcategory = "Crystal Hollows",
-            description = "Whether you want to show how long it takes to scan in chat"
+            description = "Scan Crystal Hollows for specific structures"
     )
     public static boolean timeToScan = false;
     @Property(
@@ -21,40 +21,24 @@ public class KatClientConfig extends Vigilant {
             name = "Party Fishing Notifications",
             category = "Features",
             subcategory = "Fishing",
-            description = "Whether you want to alert your party whenever you fish up a sea creature"
+            description = "Alert your party whenever you fish up a sea creature"
     )
     public static boolean partyFishingNotifications = false;
-    @Property(
-            type = PropertyType.SWITCH,
-            name = "Nick Hider",
-            category = "Features",
-            subcategory = "General",
-            description = "Whether you want to replace certain usernames with nicknames"
-    )
-    public static boolean nickHider = false;
     // qol
     @Property(
             type = PropertyType.SWITCH,
             name = "Auto Fish",
             category = "QOL",
             subcategory = "General",
-            description = "Whether you want to enable auto fish"
+            description = "Automatically fish"
     )
     public static boolean autoFish = false;
-    @Property(
-            type = PropertyType.SWITCH,
-            name = "Auto Reconnect",
-            category = "QOL",
-            subcategory = "General",
-            description = "Whether you want to enable auto reconnect"
-    )
-    public static boolean autoReconnect = false;
     @Property(
             type = PropertyType.SWITCH,
             name = "Free Cam",
             category = "QOL",
             subcategory = "General",
-            description = "Whether you want to enable free cam"
+            description = "Fly around and phase through blocks"
     )
     public static boolean freeCam = false;
     @Property(
@@ -62,14 +46,42 @@ public class KatClientConfig extends Vigilant {
             name = "Ghost Blocks",
             category = "QOL",
             subcategory = "General",
-            description = "Whether you want to enable ghost blocks"
+            description = "Make blocks disappear"
     )
     public static boolean ghostBlocks = false;
+    @Property(
+            type = PropertyType.SWITCH,
+            name = "Term Auto Clicker",
+            category = "QOL",
+            subcategory = "Term Auto Clicker",
+            description = "Automatically clicks when holding down right click"
+    )
+    public static boolean termAutoClicker = false;
+    @Property(
+            type = PropertyType.DECIMAL_SLIDER,
+            name = "Minimum CPS",
+            category = "QOL",
+            subcategory = "Term Auto Clicker",
+            description = "Minimum value for CPS range",
+            maxF = 64.0f
+    )
+    public static float minCPS = 8.0f;
+    @Property(
+            type = PropertyType.DECIMAL_SLIDER,
+            name = "Maximum CPS",
+            category = "QOL",
+            subcategory = "Term Auto Clicker",
+            description = "Maximum value for CPS range",
+            maxF = 64.0f
+    )
+    public static float maxCPS = 12.0f;
 
     public static KatClientConfig config = new KatClientConfig();
 
     public KatClientConfig() {
         super(new File("./config/katclient.toml"), "Kat Client");
         initialize();
+        addDependency("minCPS", "termAutoClicker");
+        addDependency("maxCPS", "termAutoClicker");
     }
 }
