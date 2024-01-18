@@ -1,3 +1,6 @@
+import org.apache.commons.lang3.SystemUtils
+
+
 plugins {
     idea
     java
@@ -25,26 +28,35 @@ loom {
     launchConfigs {
         "client" {
             // If you don't want mixins, remove these lines
-            property("mixin.debug", "true")
-            property("asmhelper.verbose", "true")
-            arg("--tweakClass", "org.spongepowered.asm.launch.MixinTweaker")
-            arg("--mixin", "mixins.$modid.json")
+            //property("mixin.debug", "true")
+            //property("asmhelper.verbose", "true")
+            //arg("--tweakClass", "org.spongepowered.asm.launch.MixinTweaker")
+
             arg("--tweakClass", "io.github.moulberry.moulconfig.tweaker.DevelopmentResourceTweaker")
         }
+    }
+    runConfigs {
+        "client" {
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                // This argument causes a crash on macOS
+                vmArgs.remove("-XstartOnFirstThread")
+            }
+        }
+        remove(getByName("server"))
     }
     forge {
         pack200Provider.set(dev.architectury.pack200.java.Pack200Adapter())
         // If you don't want mixins, remove this lines
-        mixinConfig("mixins.$modid.json")
+        //mixinConfig("mixins.$modid.json")
     }
     // If you don't want mixins, remove these lines
-    mixin {
-        defaultRefmapName.set("mixins.$modid.refmap.json")
-    }
+    //mixin {
+    //    defaultRefmapName.set("mixins.$modid.refmap.json")
+    //}
 }
 
 sourceSets.main {
-    output.setResourcesDir(file("$buildDir/classes/java/main"))
+    output.setResourcesDir(sourceSets.main.flatMap { it.java.classesDirectory })
 }
 
 // Dependencies:
@@ -53,7 +65,7 @@ repositories {
     mavenCentral()
     maven("https://repo.spongepowered.org/maven/")
     // If you don't want to log in with your real minecraft account, remove this line
-    maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
+    //maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
 
     maven("https://maven.notenoughupdates.org/releases/")
 }
@@ -68,13 +80,13 @@ dependencies {
     forge("net.minecraftforge:forge:1.8.9-11.15.1.2318-1.8.9")
 
     // If you don't want mixins, remove these lines
-    shadowImpl("org.spongepowered:mixin:0.7.11-SNAPSHOT") {
-        isTransitive = false
-    }
-    annotationProcessor("org.spongepowered:mixin:0.8.4-SNAPSHOT")
+    //shadowImpl("org.spongepowered:mixin:0.7.11-SNAPSHOT") {
+    //    isTransitive = false
+    //}
+    //annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT")
 
     // If you don't want to log in with your real minecraft account, remove this line
-    runtimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.1.0")
+    //runtimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.1.2")
 
     shadowImpl("org.notenoughupdates.moulconfig:legacy:2.5.0")
 }
@@ -92,8 +104,8 @@ tasks.withType(Jar::class) {
         this["ForceLoadAsMod"] = "true"
 
         // If you don't want mixins, remove these lines
-        this["TweakClass"] = "org.spongepowered.asm.launch.MixinTweaker"
-        this["MixinConfigs"] = "mixins.$modid.json"
+        //this["TweakClass"] = "org.spongepowered.asm.launch.MixinTweaker"
+        //this["MixinConfigs"] = "mixins.$modid.json"
     }
 }
 
