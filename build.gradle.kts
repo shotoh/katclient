@@ -3,7 +3,7 @@ plugins {
     java
     id("gg.essential.loom") version "0.10.0.+"
     id("dev.architectury.architectury-pack200") version "0.1.3"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 //Constants:
@@ -29,6 +29,7 @@ loom {
             property("asmhelper.verbose", "true")
             arg("--tweakClass", "org.spongepowered.asm.launch.MixinTweaker")
             arg("--mixin", "mixins.$modid.json")
+            arg("--tweakClass", "io.github.moulberry.moulconfig.tweaker.DevelopmentResourceTweaker")
         }
     }
     forge {
@@ -54,7 +55,7 @@ repositories {
     // If you don't want to log in with your real minecraft account, remove this line
     maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
 
-    maven("https://repo.essential.gg/repository/maven-public")
+    maven("https://maven.notenoughupdates.org/releases/")
 }
 
 val shadowImpl: Configuration by configurations.creating {
@@ -75,7 +76,7 @@ dependencies {
     // If you don't want to log in with your real minecraft account, remove this line
     runtimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.1.0")
 
-    implementation("gg.essential:essential-1.8.9-forge:11520+gf8b441d20")
+    shadowImpl("org.notenoughupdates.moulconfig:legacy:2.5.0")
 }
 
 // Tasks:
@@ -133,6 +134,7 @@ tasks.shadowJar {
 
     // If you want to include other dependencies and shadow them, you can relocate them in here
     fun relocate(name: String) = relocate(name, "$baseGroup.deps.$name")
+    relocate("io.github.moulberry.moulconfig", "io.github.shotoh.katclient.deps.moulconfig")
 }
 
 tasks.assemble.get().dependsOn(tasks.remapJar)

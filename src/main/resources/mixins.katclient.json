@@ -4,7 +4,5 @@
   "minVersion": "0.7",
   "compatibilityLevel": "JAVA_8",
   "client": [],
-  "mixins": [
-    "NetworkManagerMixin"
-  ]
+  "mixins": []
 }
