@@ -3,6 +3,7 @@ package io.github.shotoh.katclient.features.general;
 import io.github.shotoh.katclient.KatClient;
 import io.github.shotoh.katclient.core.KatClientConfig;
 import io.github.shotoh.katclient.utils.RenderUtils;
+import io.github.shotoh.katclient.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -35,7 +36,7 @@ public class InquisitorWaypoints {
         alertInquisitor(player, new BlockPos(player.posX, player.posY, player.posZ));
         player.sendChatMessage("/pc [KC] Inquisitor @ " +
                 coords.getX() + ", " + coords.getY() + ", " + coords.getZ());
-        if (KatClient.SOCKET != null) KatClient.SOCKET.send("Inquisitor @ " +
+        Utils.sendSocket("Inquisitor @ " +
                 coords.getX() + ", " + coords.getY() + ", " + coords.getZ());
     }
 
