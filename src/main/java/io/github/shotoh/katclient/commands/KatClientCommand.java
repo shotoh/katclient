@@ -47,7 +47,7 @@ public class KatClientCommand extends CommandBase {
                 InquisitorWaypoints.alertInquisitor(player, coords);
                 player.sendChatMessage("/pc [KC] Inquisitor @ " +
                         coords.getX() + ", " + coords.getY() + ", " + coords.getZ());
-                Utils.sendSocket("Inquisitor @ " +
+                Utils.socket("Inquisitor @ " +
                         coords.getX() + ", " + coords.getY() + ", " + coords.getZ());
             }
         }
