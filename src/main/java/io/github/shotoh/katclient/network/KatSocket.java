@@ -35,7 +35,7 @@ public class KatSocket {
     }
 
     private void receive(String msg) {
-        InquisitorWaypoints.foundInquisitor(msg);
+        InquisitorWaypoints.checkSocket(msg);
     }
 
     public void stopConnection() throws IOException {
