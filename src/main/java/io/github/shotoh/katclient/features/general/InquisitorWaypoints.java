@@ -1,6 +1,5 @@
 package io.github.shotoh.katclient.features.general;
 
-import io.github.shotoh.katclient.KatClient;
 import io.github.shotoh.katclient.core.KatClientConfig;
 import io.github.shotoh.katclient.utils.RenderUtils;
 import io.github.shotoh.katclient.utils.Utils;
@@ -36,7 +35,7 @@ public class InquisitorWaypoints {
         alertInquisitor(player, new BlockPos(player.posX, player.posY, player.posZ));
         player.sendChatMessage("/pc [KC] Inquisitor @ " +
                 coords.getX() + ", " + coords.getY() + ", " + coords.getZ());
-        Utils.sendSocket("Inquisitor @ " +
+        Utils.socket("Inquisitor @ " +
                 coords.getX() + ", " + coords.getY() + ", " + coords.getZ());
     }
 
@@ -46,7 +45,7 @@ public class InquisitorWaypoints {
         RenderUtils.renderBeaconBeam(coords, 0xFF0000, event.partialTicks);
     }
 
-    public static void foundInquisitor(String msg) {
+    public static void checkSocket(String msg) {
         if (!KatClientConfig.inquisitorWaypoints) return;
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
         if (player == null) return;

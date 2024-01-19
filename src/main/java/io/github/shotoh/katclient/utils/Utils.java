@@ -29,7 +29,7 @@ public class Utils {
         return uuid;
     }
 
-    public static void sendSocket(String msg) {
+    public static void socket(String msg) {
         if (KatClient.SOCKET != null) {
             KatClient.SOCKET.send(msg);
         } else {
