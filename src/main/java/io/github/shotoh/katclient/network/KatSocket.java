@@ -17,16 +17,17 @@ public class KatSocket {
         socket = new Socket(ip, port);
         out = new PrintWriter(socket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        new Thread(() -> {
-            try {
-                String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    receive(inputLine);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+    }
+
+    public void listen() {
+        try {
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                receive(inputLine);
             }
-        }).start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void send(String msg) {
