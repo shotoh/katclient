@@ -1,5 +1,6 @@
 package io.github.shotoh.katclient;
 
+import com.google.gson.Gson;
 import io.github.shotoh.katclient.commands.KatClientCommand;
 import io.github.shotoh.katclient.core.KatClientConfig;
 import io.github.shotoh.katclient.features.general.DungeonBlacklist;
@@ -25,10 +26,12 @@ public class KatClient {
     public static KatClientConfig CONFIG;
     public static Connection DB;
     public static KatSocket SOCKET;
+    public static Gson GSON;
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent e) {
         KatClient.CONFIG = new KatClientConfig();
+        KatClient.GSON = new Gson();
 
         new Thread(() -> {
             try {
