@@ -1,6 +1,7 @@
 package io.github.shotoh.katclient.features.general;
 
 import io.github.shotoh.katclient.KatClient;
+import io.github.shotoh.katclient.core.KatClientConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -11,7 +12,7 @@ public class PartyNotifications {
     public void onClientChatReceivedEvent(ClientChatReceivedEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayerSP player = mc.thePlayer;
-        if (KatClient.CONFIG.generalCategory.fishingNotifications && player != null) {
+        if (KatClientConfig.fishingNotifications && player != null) {
             String text = event.message.getUnformattedText();
             String coords = "(" + (int) player.posX + ", " + (int) player.posY + ", " + (int) player.posZ + ")";
             switch (text) {
@@ -43,7 +44,7 @@ public class PartyNotifications {
                     player.sendChatMessage("/pc [KC] The Sea Emperor @ " + coords);
                     break;
                 case "You are not in a party right now.":
-                    KatClient.CONFIG.generalCategory.fishingNotifications = false;
+                    KatClientConfig.fishingNotifications = false;
                     break;
             }
         }
