@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -16,6 +17,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class DungeonBlacklist {
@@ -58,6 +60,8 @@ public class DungeonBlacklist {
     }
 
     public static void addPlayer(String name, String reason) {
+        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        if (player == null) return;
         if (name == null || reason == null) {
             Utils.sendMessage("§c[KC] Username or reason is invalid");
         }
@@ -81,6 +85,7 @@ public class DungeonBlacklist {
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 Utils.sendMessage("§c[KC] " + name + " is now §4blacklisted");
+                Utils.socket(player.getName() + " blacklisted " + name + ", reason=" + reason);
             }
             rs.close();
             statement.close();
@@ -90,6 +95,8 @@ public class DungeonBlacklist {
     }
 
     public static void removePlayer(String name) {
+        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        if (player == null) return;
         if (name == null) {
             Utils.sendMessage("§c[KC] Username is invalid");
         }
@@ -110,11 +117,18 @@ public class DungeonBlacklist {
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 Utils.sendMessage("§c[KC] " + name + " is no longer §4blacklisted");
+                Utils.socket(player.getName() + " unblacklisted " + name);
             }
             rs.close();
             statement.close();
         } catch (SQLException e) {
             Utils.sendMessage("§c[KC] Database query failed (maybe invalid uuid)");
         }
+    }
+
+    public static void checkSocket(String msg) {
+        if (!msg.contains("blacklisted")) return;
+        Utils.sendMessage("§c[KC] " + msg);
+        // todo sounds
     }
 }
