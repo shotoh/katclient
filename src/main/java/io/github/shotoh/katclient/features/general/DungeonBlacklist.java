@@ -2,6 +2,7 @@ package io.github.shotoh.katclient.features.general;
 
 import io.github.shotoh.katclient.KatClient;
 import io.github.shotoh.katclient.core.KatClientConfig;
+import io.github.shotoh.katclient.utils.MojangUtils;
 import io.github.shotoh.katclient.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -32,12 +33,12 @@ public class DungeonBlacklist {
             String[] args = text.split(" ");
             if (args.length < 4) return;
             String name = args[3];
-            UUID uuid = Utils.getUUID(name);
+            String uuid = MojangUtils.getUUID(name);
             if (uuid == null) return;
             try {
                 PreparedStatement statement = conn.prepareStatement(
                         "SELECT * FROM dungeon_blacklist WHERE uuid=UUID_TO_BIN(?)");
-                statement.setString(1, uuid.toString());
+                statement.setString(1, uuid);
                 ResultSet rs = statement.executeQuery();
                 if (rs.next()) {
                     String reason = rs.getString("reason");
@@ -66,7 +67,7 @@ public class DungeonBlacklist {
             Utils.sendMessage("§c[KC] Database connection does not exist");
             return;
         }
-        UUID uuid = Utils.getUUID(name);
+        String uuid = MojangUtils.getUUID(name);
         if (uuid == null) {
             Utils.sendMessage("§c[KC] Invalid player");
             return;
@@ -74,16 +75,14 @@ public class DungeonBlacklist {
         try {
             PreparedStatement statement = conn.prepareStatement(
                     "INSERT INTO dungeon_blacklist (uuid, username, reason) " +
-                            "VALUES UUID_TO_BIN(?), ?, ?");
-            statement.setString(1, uuid.toString());
+                            "VALUES (UUID_TO_BIN(?), ?, ?)");
+            statement.setString(1, uuid);
             statement.setString(2, name);
             statement.setString(3, reason);
-            ResultSet rs = statement.executeQuery();
-            if (rs.next()) {
+            if (statement.execute()) {
                 Utils.sendMessage("§c[KC] " + name + " is now §4blacklisted");
                 Utils.socket(player.getName() + " blacklisted " + name + ", reason=" + reason);
             }
-            rs.close();
             statement.close();
         } catch (SQLException e) {
             Utils.sendMessage("§c[KC] Database query failed (maybe duplicate uuid)");
@@ -101,7 +100,7 @@ public class DungeonBlacklist {
             Utils.sendMessage("§c[KC] Database connection does not exist");
             return;
         }
-        UUID uuid = Utils.getUUID(name);
+        String uuid = MojangUtils.getUUID(name);
         if (uuid == null) {
             Utils.sendMessage("§c[KC] Invalid player");
             return;
@@ -109,13 +108,11 @@ public class DungeonBlacklist {
         try {
             PreparedStatement statement = conn.prepareStatement(
                     "DELETE FROM dungeon_blacklist WHERE uuid=UUID_TO_BIN(?)");
-            statement.setString(1, uuid.toString());
-            ResultSet rs = statement.executeQuery();
-            if (rs.next()) {
+            statement.setString(1, uuid);
+            if (statement.execute()) {
                 Utils.sendMessage("§c[KC] " + name + " is no longer §4blacklisted");
                 Utils.socket(player.getName() + " unblacklisted " + name);
             }
-            rs.close();
             statement.close();
         } catch (SQLException e) {
             Utils.sendMessage("§c[KC] Database query failed (maybe invalid uuid)");
