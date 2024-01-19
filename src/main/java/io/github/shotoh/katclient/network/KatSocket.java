@@ -1,5 +1,6 @@
 package io.github.shotoh.katclient.network;
 
+import io.github.shotoh.katclient.features.general.DungeonBlacklist;
 import io.github.shotoh.katclient.features.general.InquisitorWaypoints;
 
 import java.io.BufferedReader;
@@ -35,6 +36,7 @@ public class KatSocket {
     }
 
     private void receive(String msg) {
+        DungeonBlacklist.checkSocket(msg);
         InquisitorWaypoints.checkSocket(msg);
     }
 
