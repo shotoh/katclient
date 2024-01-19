@@ -23,19 +23,6 @@ public class Utils {
         player.playSound(name, volume, pitch);
     }
 
-    public static UUID getUUID(String name) {
-        WorldClient world = Minecraft.getMinecraft().theWorld;
-        if (world == null) return null;
-        UUID uuid = null;
-        for (EntityPlayer e : world.playerEntities) {
-            if (e.getName().equals(name)) {
-                uuid = e.getUniqueID();
-                break;
-            }
-        }
-        return uuid;
-    }
-
     public static void socket(String msg) {
         if (KatClient.SOCKET != null) {
             KatClient.SOCKET.send(msg);
