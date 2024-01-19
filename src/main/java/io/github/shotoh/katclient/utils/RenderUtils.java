@@ -5,9 +5,13 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
+
+import javax.vecmath.Vector3f;
 
 public class RenderUtils {
     private static final ResourceLocation beaconBeam = new ResourceLocation("textures/entity/beacon_beam.png");
@@ -101,5 +105,22 @@ public class RenderUtils {
         if (disableDepth) {
             GlStateManager.enableDepth();
         }
+    }
+
+    public static void renderBeaconBeam(BlockPos block, int rgb, float partialTicks) {
+        double viewerX;
+        double viewerY;
+        double viewerZ;
+
+        Entity viewer = Minecraft.getMinecraft().getRenderViewEntity();
+        viewerX = viewer.lastTickPosX + (viewer.posX - viewer.lastTickPosX) * partialTicks;
+        viewerY = viewer.lastTickPosY + (viewer.posY - viewer.lastTickPosY) * partialTicks;
+        viewerZ = viewer.lastTickPosZ + (viewer.posZ - viewer.lastTickPosZ) * partialTicks;
+
+        double x = block.getX() - viewerX;
+        double y = block.getY() - viewerY;
+        double z = block.getZ() - viewerZ;
+
+        RenderUtils.renderBeaconBeam(x, y, z, rgb, 1.0f, partialTicks, true);
     }
 }
