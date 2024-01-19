@@ -43,9 +43,6 @@ public class PartyNotifications {
                 case "The Sea Emperor arises from the depths.":
                     player.sendChatMessage("/pc [KC] The Sea Emperor @ " + coords);
                     break;
-                case "You are not in a party right now.":
-                    KatClientConfig.fishingNotifications = false;
-                    break;
             }
         }
     }
