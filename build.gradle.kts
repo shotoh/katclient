@@ -32,7 +32,7 @@ loom {
             //property("asmhelper.verbose", "true")
             //arg("--tweakClass", "org.spongepowered.asm.launch.MixinTweaker")
 
-            arg("--tweakClass", "io.github.moulberry.moulconfig.tweaker.DevelopmentResourceTweaker")
+            arg("--tweakClass", "cc.polyfrost.oneconfig.loader.stage0.LaunchWrapperTweaker")
         }
     }
     runConfigs {
@@ -67,7 +67,7 @@ repositories {
     // If you don't want to log in with your real minecraft account, remove this line
     //maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
 
-    maven("https://maven.notenoughupdates.org/releases/")
+    maven("https://repo.polyfrost.org/releases")
 }
 
 val shadowImpl: Configuration by configurations.creating {
@@ -88,7 +88,8 @@ dependencies {
     // If you don't want to log in with your real minecraft account, remove this line
     //runtimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.1.2")
 
-    shadowImpl("org.notenoughupdates.moulconfig:legacy:2.5.0")
+    compileOnly("cc.polyfrost:oneconfig-1.8.9-forge:0.2.2-alpha+")
+    shadowImpl("cc.polyfrost:oneconfig-wrapper-launchwrapper:1.0.0-beta+")
 }
 
 // Tasks:
@@ -106,6 +107,10 @@ tasks.withType(Jar::class) {
         // If you don't want mixins, remove these lines
         //this["TweakClass"] = "org.spongepowered.asm.launch.MixinTweaker"
         //this["MixinConfigs"] = "mixins.$modid.json"
+
+        this["ModSide"] = "CLIENT"
+        this["TweakOrder"] = 0
+        this["TweakClass"] = "cc.polyfrost.oneconfig.loader.stage0.LaunchWrapperTweaker"
     }
 }
 
