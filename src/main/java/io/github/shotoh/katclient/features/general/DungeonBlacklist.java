@@ -6,10 +6,6 @@ import io.github.shotoh.katclient.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.world.World;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -17,7 +13,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.UUID;
 
 public class DungeonBlacklist {
@@ -27,13 +22,13 @@ public class DungeonBlacklist {
         EntityPlayerSP player = mc.thePlayer;
         WorldClient world = mc.theWorld;
         Connection conn = KatClient.DB;
-        if (conn == null) {
-            Utils.sendMessage("§c[KC] Database connection does not exist");
-            return;
-        }
         if (KatClientConfig.dungeonBlacklist && player != null && world != null) {
             String text = event.message.getUnformattedText();
             if (!text.contains("joined the dungeon group")) return;
+            if (conn == null) {
+                Utils.sendMessage("§c[KC] Database connection does not exist");
+                return;
+            }
             String[] args = text.split(" ");
             if (args.length < 4) return;
             String name = args[3];
@@ -49,6 +44,7 @@ public class DungeonBlacklist {
                     if (reason != null) {
                         player.sendChatMessage("/p kick " + name);
                         Utils.sendMessage("§c[KC] " + name + " is §4blacklisted§c, reason='" + reason + "'");
+                        Utils.playSound("random.anvil_land", 1f, 1f);
                     }
                 }
                 rs.close();
@@ -129,6 +125,6 @@ public class DungeonBlacklist {
     public static void checkSocket(String msg) {
         if (!msg.contains("blacklisted")) return;
         Utils.sendMessage("§c[KC] " + msg);
-        // todo sounds
+        Utils.playSound("note.pling", 1f, 1f);
     }
 }
