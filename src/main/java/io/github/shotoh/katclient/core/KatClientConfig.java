@@ -1,27 +1,25 @@
 package io.github.shotoh.katclient.core;
 
-import io.github.moulberry.moulconfig.Config;
-import io.github.moulberry.moulconfig.annotations.Category;
-import io.github.moulberry.moulconfig.annotations.ConfigEditorBoolean;
-import io.github.moulberry.moulconfig.annotations.ConfigOption;
+import cc.polyfrost.oneconfig.config.Config;
+import cc.polyfrost.oneconfig.config.annotations.Switch;
+import cc.polyfrost.oneconfig.config.data.Mod;
+import cc.polyfrost.oneconfig.config.data.ModType;
 
 public class KatClientConfig extends Config {
-    @Override
-    public String getTitle() {
-        return "§dKat Client Config";
+    public KatClientConfig() {
+        super(new Mod("Kat Client", ModType.SKYBLOCK), "katclient.json");
+        initialize();
     }
 
-    @Category(name = "General", desc = "General features")
-    public GeneralCategory generalCategory = new GeneralCategory();
+    @Switch(
+            name = "Fishing Notifications",
+            description = "Alert your party whenever you fish up a sea creature"
+    )
+    public static boolean fishingNotifications = false;
 
-
-    public static class GeneralCategory {
-        @ConfigOption(name = "Fishing Notifications", desc = "Alert your party whenever you fish up a sea creature")
-        @ConfigEditorBoolean
-        public boolean fishingNotifications = false;
-
-        @ConfigOption(name = "Inquisitor Waypoints", desc = "Alert your party whenever you find an inquisitor")
-        @ConfigEditorBoolean
-        public boolean inquisitorWaypoints = false;
-    }
+    @Switch(
+            name = "Inquisitor Waypoints",
+            description = "Alert your party whenever you find an inquisitor"
+    )
+    public static boolean inquisitorWaypoints = false;
 }
