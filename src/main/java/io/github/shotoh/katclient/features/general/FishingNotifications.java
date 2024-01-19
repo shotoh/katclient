@@ -1,13 +1,12 @@
 package io.github.shotoh.katclient.features.general;
 
-import io.github.shotoh.katclient.KatClient;
 import io.github.shotoh.katclient.core.KatClientConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class PartyNotifications {
+public class FishingNotifications {
     @SubscribeEvent
     public void onClientChatReceivedEvent(ClientChatReceivedEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
