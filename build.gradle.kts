@@ -90,7 +90,7 @@ dependencies {
 
     compileOnly("cc.polyfrost:oneconfig-1.8.9-forge:0.2.2-alpha+")
     shadowImpl("cc.polyfrost:oneconfig-wrapper-launchwrapper:1.0.0-beta+")
-    implementation("mysql:mysql-connector-java:8.0.33")
+    shadowImpl("com.mysql:mysql-connector-j:8.3.0")
 }
 
 // Tasks:
