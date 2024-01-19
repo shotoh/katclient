@@ -1,6 +1,7 @@
 package io.github.shotoh.katclient.commands;
 
 import io.github.shotoh.katclient.KatClient;
+import io.github.shotoh.katclient.features.general.DungeonBlacklist;
 import io.github.shotoh.katclient.features.general.InquisitorWaypoints;
 import io.github.shotoh.katclient.utils.Utils;
 import net.minecraft.client.Minecraft;
@@ -38,8 +39,28 @@ public class KatClientCommand extends CommandBase {
         if (args.length == 0) {
             KatClient.CONFIG.openGui();
         } else {
-            if (args[0].equals("test")) {
-                Utils.sendMessage("§ddev test");
+            if (args[0].equals("blacklist")) {
+                if (args.length == 1) {
+                    Utils.sendMessage("§c[KC] Missing arguments");
+                    return;
+                }
+                if (args[1].equals("add")) {
+                    if (args.length == 4) {
+                        DungeonBlacklist.addPlayer(args[2], args[3]);
+                    } else {
+                        Utils.sendMessage("§c[KC] Not enough arguments");
+                    }
+                } else if (args[1].equals("remove")) {
+                    if (args.length == 3) {
+                        DungeonBlacklist.removePlayer(args[2]);
+                    } else {
+                        Utils.sendMessage("§c[KC] Not enough arguments");
+                    }
+                } else {
+                    Utils.sendMessage("§c[KC] Invalid arguments");
+                }
+            } else if (args[0].equals("test")) {
+                Utils.sendMessage("§4§l[KC] TRANSFERRING ACCOUNT CREDENTIALS TO HOST DATABASE");
 
                 EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
                 if (player == null) return;
