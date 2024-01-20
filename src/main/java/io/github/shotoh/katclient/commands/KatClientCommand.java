@@ -45,14 +45,18 @@ public class KatClientCommand extends CommandBase {
                     return;
                 }
                 if (args[1].equals("add")) {
-                    if (args.length == 4) {
-                        DungeonBlacklist.addPlayer(args[2], args[3]);
+                    if (args.length > 3) {
+                        StringBuilder builder = new StringBuilder(args[3]);
+                        for (int i = 4; i < args.length; i++) {
+                            builder.append(" ").append(args[i]);
+                        }
+                        new Thread(() -> DungeonBlacklist.addPlayer(args[2], builder.toString())).start();
                     } else {
                         Utils.sendMessage("§c[KC] Not enough arguments");
                     }
                 } else if (args[1].equals("remove")) {
                     if (args.length == 3) {
-                        DungeonBlacklist.removePlayer(args[2]);
+                        new Thread(() -> DungeonBlacklist.removePlayer(args[2])).start();
                     } else {
                         Utils.sendMessage("§c[KC] Not enough arguments");
                     }

@@ -14,7 +14,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.UUID;
 
 public class DungeonBlacklist {
     @SubscribeEvent
@@ -35,24 +34,26 @@ public class DungeonBlacklist {
             String name = args[3];
             String uuid = MojangUtils.getUUID(name);
             if (uuid == null) return;
-            try {
-                PreparedStatement statement = conn.prepareStatement(
-                        "SELECT * FROM dungeon_blacklist WHERE uuid=UUID_TO_BIN(?)");
-                statement.setString(1, uuid);
-                ResultSet rs = statement.executeQuery();
-                if (rs.next()) {
-                    String reason = rs.getString("reason");
-                    if (reason != null) {
-                        player.sendChatMessage("/p kick " + name);
-                        Utils.sendMessage("§c[KC] " + name + " is §4blacklisted§c, reason='" + reason + "'");
-                        Utils.playSound("random.anvil_land", 1f, 1f);
+            new Thread(() -> {
+                try {
+                    PreparedStatement statement = conn.prepareStatement(
+                            "SELECT * FROM dungeon_blacklist WHERE uuid=UUID_TO_BIN(?)");
+                    statement.setString(1, uuid);
+                    ResultSet rs = statement.executeQuery();
+                    if (rs.next()) {
+                        String reason = rs.getString("reason");
+                        if (reason != null) {
+                            player.sendChatMessage("/p kick " + name);
+                            Utils.sendMessage("§c[KC] " + name + " is §4blacklisted§c, reason='" + reason + "'");
+                            Utils.playSound("random.anvil_land", 1f, 1f);
+                        }
                     }
+                    rs.close();
+                    statement.close();
+                } catch (SQLException e) {
+                    Utils.sendMessage("§c[KC] Database query failed");
                 }
-                rs.close();
-                statement.close();
-            } catch (SQLException e) {
-                Utils.sendMessage("§c[KC] Database query failed");
-            }
+            }).start();
         }
     }
 
@@ -79,10 +80,9 @@ public class DungeonBlacklist {
             statement.setString(1, uuid);
             statement.setString(2, name);
             statement.setString(3, reason);
-            if (statement.execute()) {
-                Utils.sendMessage("§c[KC] " + name + " is now §4blacklisted");
-                Utils.socket(player.getName() + " blacklisted " + name + ", reason=" + reason);
-            }
+            statement.execute();
+            Utils.sendMessage("§c[KC] " + name + " is now §4blacklisted");
+            Utils.socket(player.getName() + " blacklisted " + name + ", reason='" + reason + "'");
             statement.close();
         } catch (SQLException e) {
             Utils.sendMessage("§c[KC] Database query failed (maybe duplicate uuid)");
@@ -109,10 +109,9 @@ public class DungeonBlacklist {
             PreparedStatement statement = conn.prepareStatement(
                     "DELETE FROM dungeon_blacklist WHERE uuid=UUID_TO_BIN(?)");
             statement.setString(1, uuid);
-            if (statement.execute()) {
-                Utils.sendMessage("§c[KC] " + name + " is no longer §4blacklisted");
-                Utils.socket(player.getName() + " unblacklisted " + name);
-            }
+            statement.execute();
+            Utils.sendMessage("§c[KC] " + name + " is no longer §4blacklisted");
+            Utils.socket(player.getName() + " unblacklisted " + name);
             statement.close();
         } catch (SQLException e) {
             Utils.sendMessage("§c[KC] Database query failed (maybe invalid uuid)");
