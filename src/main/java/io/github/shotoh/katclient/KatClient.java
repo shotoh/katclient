@@ -35,19 +35,16 @@ public class KatClient {
 
         new Thread(() -> {
             try {
+                KatClient.DB = DriverManager.getConnection("jdbc:mysql://" + KatClientConfig.serverIP + ":3306/kat",
+                        KatClientConfig.databaseUsername, KatClientConfig.databasePassword);
                 KatClient.SOCKET = new KatSocket(KatClientConfig.serverIP, KatClientConfig.socketPort);
                 KatClient.SOCKET.listen();
             } catch (IOException ex) {
                 System.out.println("Failed to form socket connection, some features may not work!");
+            } catch (SQLException ex) {
+                System.out.println("Failed to form database connection, some features may not work!");
             }
         }).start();
-
-        try {
-            KatClient.DB = DriverManager.getConnection("jdbc:mysql://" + KatClientConfig.serverIP + ":3306/kat",
-                    KatClientConfig.databaseUsername, KatClientConfig.databasePassword);
-        } catch (SQLException ex) {
-            System.out.println("Database connection failed, some features may not work!");
-        }
 
         // commands
         ClientCommandHandler.instance.registerCommand(new KatClientCommand());
